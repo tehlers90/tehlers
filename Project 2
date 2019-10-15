@@ -1,0 +1,454 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace Project2_EhlersT
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Theodore Ehlers, Project 2");
+
+            StreamReader fileReader = new StreamReader("line1-1.txt");
+            try
+            {
+                string line = fileReader.ReadToEnd();
+
+                //put the values in a string as chars
+                string[] stringMat = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                //set length of int matrix
+                int[] intMat = new int[stringMat.Length];
+
+                //put chars into int matrix as ints
+                for (int i = 0; i < stringMat.Length; i++)
+                {
+                    intMat[i] = int.Parse(stringMat[i]);
+                }
+
+                //set rows and cols
+                int row = intMat[2];
+                int column = intMat[2];
+                
+                int[] point = new int[2];
+                point[0] = intMat[3];
+                point[1] = intMat[4];
+
+                Console.WriteLine("File 1");
+                Console.WriteLine("(" + intMat[3].ToString() + "," + intMat[4].ToString() + ")");
+                Console.WriteLine("(" + intMat[5].ToString() + "," + intMat[6].ToString() + ")");
+                Console.WriteLine("(" + intMat[0].ToString() + "," + intMat[1].ToString() + ")");
+                Console.WriteLine("(" + intMat[2].ToString() + "," + intMat[2].ToString() + ")");
+
+                string[,] matrix = new string[row, column];
+
+                //go through the matrix and put an + anywhere there is a point on the vector
+                for (int x = 0; x < row; x++)
+                {
+                    for (int y = 0; y < column; y++)
+                    {
+                        matrix[x, y] = " . ";
+                        
+                        if ((y == point[1] + intMat[5]) && (x == point[0] + intMat[6]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[0] = x;
+                            point[1] = y;
+                        }
+
+                        if ((y == point[1] + intMat[5]) && (x == point[0] + intMat[6] || x == 0))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[0] = x;
+                            point[1] = y;
+                        }
+
+                        Console.Write(matrix[x, y]);
+                    }
+
+                    Console.WriteLine();
+                }
+                
+                File2_3("line2.txt", 2);
+                File2_3("line3.txt", 3);
+                File4("line4.txt");
+                File5("line5.txt");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                fileReader.Close();
+            }
+        }
+
+        public static void File2_3(string read, int lineNum)
+        {
+
+            StreamReader fileReader = new StreamReader(read);
+
+            try
+            {
+                string line = fileReader.ReadToEnd();
+
+                //put the values in a string as chars
+                string[] stringMat = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                //set length of int matrix
+                int[] intMat = new int[stringMat.Length];
+
+                //put chars into int matrix as ints
+                for (int i = 0; i < stringMat.Length; i++)
+                {
+                    intMat[i] = int.Parse(stringMat[i]);
+                }
+
+                //set rows and cols
+                int row = intMat[2] + 1;
+                int column = intMat[2] + 1;
+                
+                int[] point = new int[2];
+
+                int[] vector = new int[2];
+                vector[0] = intMat[5];
+                vector[1] = intMat[6];
+
+                int[] box = new int[2];
+                box[0] = intMat[0];
+                box[1] = intMat[1];
+
+                //set target box
+                if (intMat[3] < 0)
+                {
+                    point[0] = (vector[0] + intMat[3]) + (vector[0] - box[0]);
+                }
+                else
+                {
+                    point[0] = intMat[3];
+                }
+
+                if (intMat[4] < 0)
+                {
+                    point[1] = (vector[1] + intMat[4]) + (vector[1] - box[1]);
+                }
+                else
+                {
+                    point[1] = intMat[4];
+                }
+
+                if (point[1] > row)
+                {
+                    point[1] = (box[1] - row) + intMat[1];
+                }
+                
+                string[,] matrix = new string[row, column];
+
+                //go through the matrix and put an + anywhere there is a point on the vector
+                for (int x = 0; x < row; x++)
+                {
+                    for (int y = 0; y < column; y++)
+                    {
+                        matrix[x, y] = " . ";
+                        
+                        if ((y == point[0] - intMat[5]) && (x == point[1] - intMat[6]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[1] = x;
+                            point[0] = y;
+                        }
+                        
+                        if ((y == point[0] + intMat[5]) && (x == point[1] + intMat[6]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[1] = x;
+                            point[0] = y;
+                        }
+                        
+                        if (y == point[0] && (x == point[1]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[1] = x;
+                            point[0] = y;
+                        }
+
+                    }
+                }
+
+                Console.WriteLine("File " + lineNum);
+                Console.WriteLine("(" + intMat[3].ToString() + "," + intMat[4].ToString() + ")");
+                Console.WriteLine("(" + intMat[5].ToString() + "," + intMat[6].ToString() + ")");
+                Console.WriteLine("(" + intMat[0].ToString() + "," + intMat[1].ToString() + ")");
+                Console.WriteLine("(" + intMat[2].ToString() + "," + intMat[2].ToString() + ")");
+                
+                //print matrix
+                for (int i = row - 1; i > 0; i--)
+                {
+                    for (int j = 0; j < column; j++)
+                    {
+                        Console.Write(matrix[i, j]);
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                fileReader.Close();
+            }
+        }
+
+        public static void File4(string read)
+        {
+
+            StreamReader fileReader = new StreamReader(read);
+
+            try
+            {
+                string line = fileReader.ReadToEnd();
+
+                //put the values in a string as chars
+                string[] stringMat = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                //set length of int matrix
+                int[] intMat = new int[stringMat.Length];
+
+                //put chars into int matrix as ints
+                for (int i = 0; i < stringMat.Length; i++)
+                {
+                    intMat[i] = int.Parse(stringMat[i]);
+                }
+
+                //set rows and cols
+                int row = intMat[2] + 1;
+                int column = intMat[2] + 1;
+                
+                int[] point = new int[2];
+
+                int[] vector = new int[2];
+                vector[0] = intMat[5];
+                vector[1] = intMat[6];
+
+                int[] box = new int[2];
+                box[0] = intMat[0];
+                box[1] = intMat[1];
+
+                //set target box
+                if (intMat[3] < 0)
+                {
+                    point[0] = (vector[0] + intMat[3]) + (vector[0] - box[0]);
+                }
+                else
+                {
+                    point[0] = intMat[3];
+                }
+
+                if (intMat[4] < 0)
+                {
+                    point[1] = (vector[1] + intMat[4]) + (vector[1] - box[1]);
+                }
+                else
+                {
+                    point[1] = intMat[4];
+                }
+
+                if (point[1] > row)
+                {
+                    point[1] = (box[1] - row) + intMat[1];
+                }
+                
+                string[,] matrix = new string[row, column];
+
+                //go through the matrix and put an + anywhere there is a point on the vector
+                for (int x = 0; x < row; x++)
+                {
+                    for (int y = 0; y < column; y++)
+                    {
+                        matrix[x, y] = " . ";
+                        
+                        if ((y == point[0] + (intMat[5] + intMat[5] + intMat[5])) && (x == point[1] + intMat[6]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[1] = x;
+                            point[0] = y;
+                        }
+                        
+                        if ((y == point[0] - intMat[5]) && (x == point[1] - intMat[6]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[1] = x;
+                            point[0] = y;
+                        }
+
+                        if (y == point[0] && (x == point[1]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[1] = x;
+                            point[0] = y;
+                        }
+                    }
+                }
+
+                Console.WriteLine("File 4");
+                Console.WriteLine("(" + intMat[3].ToString() + "," + intMat[4].ToString() + ")");
+                Console.WriteLine("(" + intMat[5].ToString() + "," + intMat[6].ToString() + ")");
+                Console.WriteLine("(" + intMat[0].ToString() + "," + intMat[1].ToString() + ")");
+                Console.WriteLine("(" + intMat[2].ToString() + "," + intMat[2].ToString() + ")");
+
+                //print matrix
+                for (int i = row - 1; i > 0; i--)
+                {
+                    for (int j = 0; j < column; j++)
+                    {
+                        Console.Write(matrix[i, j]);
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                fileReader.Close();
+            }
+        }
+
+        public static void File5(string read)
+        {
+
+            StreamReader fileReader = new StreamReader(read);
+            try
+            {
+                string line = fileReader.ReadToEnd();
+
+                //put the values in a string as chars
+                string[] stringMat = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                //set length of int matrix
+                int[] intMat = new int[stringMat.Length];
+
+                //put chars into int matrix as ints
+                for (int i = 0; i < stringMat.Length; i++)
+                {
+                    intMat[i] = int.Parse(stringMat[i]);
+                }
+
+                //set rows and cols
+                int row = intMat[2] + 1;
+                int column = intMat[2] + 1;
+                
+                int[] point = new int[2];
+
+                int[] vector = new int[2];
+                vector[0] = intMat[5];
+                vector[1] = intMat[6];
+
+                int[] box = new int[2];
+                box[0] = intMat[0];
+                box[1] = intMat[1];
+                
+                //set target box
+                if (intMat[3] < 0)
+                {
+                    point[0] = (vector[0] + intMat[3]) + (vector[0] - box[0]);
+                }
+                else
+                {
+                    point[0] = intMat[3];
+                }
+
+                if (intMat[4] < 0)
+                {
+                    point[1] = (vector[1] + intMat[4]) + (vector[1] - box[1]);
+                }
+                else
+                {
+                    point[1] = intMat[4];
+                }
+
+                if (point[1] > 0)
+                {
+                    point[1] = intMat[1] - (box[1] - 1);
+                }
+                
+                string[,] matrix = new string[row, column];
+
+                //go through the matrix and put an + anywhere there is a point on the vector
+                for (int x = 0; x < row; x++)
+                {
+                    for (int y = 0; y < column; y++)
+                    {
+                        matrix[x, y] = " . ";
+                        
+                        if ((y == point[0] + intMat[5]) && (x == point[1] + intMat[6]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[1] = x;
+                            point[0] = y;
+                        }
+                        
+                        if ((y == point[0] - intMat[5]) && (x == point[1] - intMat[6]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[1] = x;
+                            point[0] = y;
+                        }
+
+                        if (y == point[0] && (x == point[1]))
+                        {
+                            matrix[x, y] = " + ";
+
+                            point[1] = x;
+                            point[0] = y;
+                        }
+                    }
+                }
+
+                Console.WriteLine("File 5");
+                Console.WriteLine("(" + intMat[3].ToString() + "," + intMat[4].ToString() + ")");
+                Console.WriteLine("(" + intMat[5].ToString() + "," + intMat[6].ToString() + ")");
+                Console.WriteLine("(" + intMat[0].ToString() + "," + intMat[1].ToString() + ")");
+                Console.WriteLine("(" + intMat[2].ToString() + "," + intMat[2].ToString() + ")");
+
+                //print matrix
+                for (int i = row - 1; i > 0; i--)
+                {
+                    for (int j = 0; j < column; j++)
+                    {
+                        Console.Write(matrix[i, j]);
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                fileReader.Close();
+            }
+        }
+    }
+}
